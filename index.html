@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mr Presentation | قوالب بوربوينت جاهزة وتصميم عروض احترافية</title>
 
+  <!-- SEO -->
   <meta name="description" content="Mr Presentation | مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض تقديمية فخمة للخليج والسعودية ومصر. كتابة وصياغة، إنفوجرافيك، وتسليم سريع." />
-  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, بوربوينت, قوالب بوربوينت, عرض تقديمي, تصميم عروض, ppt, presentation, السعودية, الخليج" />
+  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, mr presentation, مستر بريزنتيشن عروض, بوربوينت, قوالب بوربوينت, عرض تقديمي, تصميم عروض, ppt, presentation, السعودية, الخليج, قوالب ppt" />
   <meta property="og:title" content="Mr Presentation - قوالب وعروض بوربوينت احترافية" />
   <meta property="og:description" content="قوالب جاهزة + تصميم من الصفر. اطلب الآن عبر واتساب." />
   <meta property="og:type" content="website" />
@@ -23,39 +23,34 @@
 
   <style>
     html, body {width:100%; overflow-x:hidden; scroll-behavior:smooth;}
-    body{font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; color:#e5e7eb; background:#0b1220;}
+    body{
+      font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+      color:#e5e7eb;
+      background: #0b1220 url('tech-bg.gif') no-repeat center center fixed;
+      background-size: cover;
+    }
     :root{--vio:#7c3aed; --cyan:#22d3ee; --gold:#f59e0b; --glass:rgba(255,255,255,.06);}
-
-    /* خلفية Particles */
-    #particles{position:fixed; inset:0; z-index:0; width:100%; height:100%; pointer-events:none;
-      background:radial-gradient(1000px 500px at 115% -10%, rgba(124,58,237,.18), transparent),
-                 radial-gradient(800px 400px at -15% 110%, rgba(34,211,238,.16), transparent);}
-    .backdrop{position:fixed; inset:0; z-index:0;
-      background-image:linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px),
-                       linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size:80px 80px; pointer-events:none;}
 
     header.nav{position:sticky; top:0; z-index:20; backdrop-filter:saturate(140%) blur(10px);
       background:linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.12)); border-bottom:1px solid rgba(255,255,255,.06)}
     .container{max-width:72rem; margin-inline:auto; padding-inline:1rem}
-    main, section, header.nav, footer { position:relative; z-index:1; }
-
     .title-grad{background:linear-gradient(45deg, #a78bfa, #22d3ee, #f59e0b); -webkit-background-clip:text; background-clip:text; color:transparent}
     .card{border:1px solid rgba(255,255,255,.08); background:var(--glass); border-radius:1rem; transition:.2s ease}
     .btn{border-radius:.9rem; padding:.75rem 1rem; font-weight:700; transition:.2s ease; cursor:pointer}
     .btn-primary{background:linear-gradient(135deg, var(--vio), var(--cyan)); color:#fff}
     .btn-ghost{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#fff}
-    footer{border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.3)}
+    footer{border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.4)}
 
     /* Hover scale */
     .hover-scale{transition:transform .18s ease, box-shadow .18s ease}
     .hover-scale:hover{transform:scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.35)}
+
+    /* Make videos feel alive on hover */
+    .template-video{cursor:pointer; outline:0}
+    .template-video:hover{filter:brightness(1.05) saturate(1.05)}
   </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-  <div class="backdrop"></div>
-
   <header class="nav">
     <div class="container py-3 flex items-center gap-3">
       <a href="#" class="flex items-center gap-2 hover-scale" style="cursor:pointer">
@@ -79,7 +74,9 @@
     <section class="relative">
       <div class="container py-14 grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">نسوّي لك <span class="title-grad">عرض بوربوينت يبيض الوجه</span> ويشد الدكاترة والزملاء</h1>
+          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+            نسوّي لك <span class="title-grad">عرض بوربوينت يبيض الوجه</span> ويشد الدكاترة والزملاء
+          </h1>
           <p class="mt-4 text-gray-200/90 text-lg">قوالب جاهزة + تصميم من الصفر. نخدم الخليج والسعودية ومصر — صياغة مرتبة، تصميم احترافي، إنفوجرافيك، وتسليم سريع.</p>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="#templates" class="btn btn-primary hover-scale">شوف القوالب</a>
@@ -105,7 +102,9 @@
           <!-- Template 1 -->
           <article class="card p-4 hover-scale">
             <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
-              <video controls playsinline preload="metadata" class="w-full h-full object-cover">
+              <video class="template-video w-full h-full object-cover" autoplay muted loop playsinline controls
+                     data-template="Template 1"
+                     title="Template 1 Preview">
                 <source src="template1.mp4" type="video/mp4">
               </video>
             </div>
@@ -114,14 +113,17 @@
                 <h3 class="font-bold text-lg">قالب جاهز – Template 1</h3>
                 <p class="text-sm text-gray-300">عرض احترافي بانتقالات وإنفوجرافيك.</p>
               </div>
-              <a class="btn btn-primary hover-scale" href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%201%20من%20Mr%20Presentation">اطلب القالب</a>
+              <a class="btn btn-primary hover-scale"
+                 href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%201%20من%20Mr%20Presentation">اطلب القالب</a>
             </div>
           </article>
 
           <!-- Template 2 -->
           <article class="card p-4 hover-scale">
             <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
-              <video controls playsinline preload="metadata" class="w-full h-full object-cover">
+              <video class="template-video w-full h-full object-cover" autoplay muted loop playsinline controls
+                     data-template="Template 2"
+                     title="Template 2 Preview">
                 <source src="template2.mp4" type="video/mp4">
               </video>
             </div>
@@ -130,11 +132,12 @@
                 <h3 class="font-bold text-lg">قالب جاهز – Template 2</h3>
                 <p class="text-sm text-gray-300">ستايل حديث مناسب للمشاريع والبحوث.</p>
               </div>
-              <a class="btn btn-primary hover-scale" href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%202%20من%20Mr%20Presentation">اطلب القالب</a>
+              <a class="btn btn-primary hover-scale"
+                 href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%202%20من%20Mr%20Presentation">اطلب القالب</a>
             </div>
           </article>
         </div>
-        <p class="text-xs text-gray-400 mt-3">الملفات الأصلية PPT/PPTX جاهزة للإرسال بعد التواصل.</p>
+        <p class="text-xs text-gray-300 mt-3">ملاحظة: ملفات PPT/PPTX تُرسل بعد اختيار القالب والتواصل على واتساب.</p>
       </div>
     </section>
 
@@ -174,7 +177,10 @@
       <div class="container">
         <h2 class="text-2xl sm:text-3xl font-extrabold mb-6">الأسئلة المتكررة</h2>
         <details class="card p-4 hover-scale">
-          <summary class="cursor-pointer marker:hidden flex items-center justify-between"><span class="font-bold">التسليم كم يحتاج وقت؟</span><span class="transition">▼</span></summary>
+          <summary class="cursor-pointer marker:hidden flex items-center justify-between">
+            <span class="font-bold">التسليم كم يحتاج وقت؟</span>
+            <span class="transition">▼</span>
+          </summary>
           <p class="mt-2 text-gray-200">غالبًا 24–72 ساعة حسب حجم المحتوى.</p>
         </details>
       </div>
@@ -184,11 +190,25 @@
   <footer class="py-10">
     <div class="container flex flex-col sm:flex-row items-center justify-between gap-4">
       <p class="text-sm text-gray-300">© <span id="y"></span> Mr Presentation (مستر بريزنتيشن). كل الحقوق محفوظة.</p>
-      <div class="flex items-center gap-4 text-sm"><a href="https://wa.me/201141965776" class="hover-scale">واتساب</a><a href="tel:01141965776" class="hover-scale">اتصال</a></div>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="https://wa.me/201141965776" class="hover-scale">واتساب</a>
+        <a href="tel:01141965776" class="hover-scale">اتصال</a>
+      </div>
     </div>
   </footer>
 
-  <script src="particles.js"></script>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script>
+    // السنة في الفوتر
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // عند الضغط على فيديو القالب يفتح واتساب برسالة فيها اسم القالب
+    document.querySelectorAll('.template-video').forEach(v => {
+      v.addEventListener('click', () => {
+        const name = encodeURIComponent(v.dataset.template || 'Template');
+        const url = 'https://wa.me/201141965776?text=' + encodeURIComponent('أبغى قالب ') + name + encodeURIComponent(' من Mr Presentation');
+        window.open(url, '_blank');
+      });
+    });
+  </script>
 </body>
 </html>
