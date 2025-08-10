@@ -1,77 +1,83 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mr Presentation | عروض باوربوينت احترافية للخليج والسعودية</title>
-  <meta name="description" content="نسوّي لك عرض باوربوينت يبيض الوجه — كتابة وصياغة مرتبة، تصميم نظيف، إنفوجرافيك، وتسليم سريع. نخدم الخليج والسعودية ومصر." />
-  <meta name="theme-color" content="#0b1220" />
+  <title>Mr Presentation | قوالب بوربوينت جاهزة وتصميم عروض احترافية</title>
+
+  <meta name="description" content="Mr Presentation | مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض تقديمية فخمة للخليج والسعودية ومصر. كتابة وصياغة، إنفوجرافيك، وتسليم سريع." />
+  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, بوربوينت, قوالب بوربوينت, عرض تقديمي, تصميم عروض, ppt, presentation, السعودية, الخليج" />
+  <meta property="og:title" content="Mr Presentation - قوالب وعروض بوربوينت احترافية" />
+  <meta property="og:description" content="قوالب جاهزة + تصميم من الصفر. اطلب الآن عبر واتساب." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="logo.png" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"Mr Presentation","alternateName":"مستر بريزنتيشن","url":"/","logo":"logo.png","sameAs":["https://www.tiktok.com/@mr_presentation"]}
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html{scroll-behavior:smooth}
-    body{font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
 
-    /* خلفية تقنية ثابتة + طبقة تظليل لقراءة أوضح */
-    .tech-bg{
-      position:relative;
-      min-height:100dvh;
-      background:
-        linear-gradient(180deg, rgba(11,18,32,.8), rgba(11,18,32,.8)), /* overlay */
-        url('bg-tech.jpg') center/cover no-repeat fixed; /* الصورة الثابتة */
-      overflow-x:hidden; /* السماح بالتمرير العمودي فقط */
-    }
-    /* شبكة خفيفة فوق الخلفية */
-    .tech-bg:before{
-      content:""; position:absolute; inset:-2px;
-      background-image:
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(0deg,  rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size:80px 80px, 80px 80px;
-      pointer-events:none;
-    }
-    .glass{backdrop-filter:saturate(140%) blur(10px); background:linear-gradient(135deg, rgba(124,58,237,.18), rgba(34,211,238,.12));}
-    .rtl-flip{transform:scaleX(-1)}
+  <style>
+    html, body {width:100%; overflow-x:hidden; scroll-behavior:smooth;}
+    body{font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; color:#e5e7eb; background:#0b1220;}
+    :root{--vio:#7c3aed; --cyan:#22d3ee; --gold:#f59e0b; --glass:rgba(255,255,255,.06);}
+
+    /* خلفية Particles */
+    #particles{position:fixed; inset:0; z-index:0; display:block; width:100%; height:100%; background:radial-gradient(1000px 500px at 115% -10%, rgba(124,58,237,.18), transparent), radial-gradient(800px 400px at -15% 110%, rgba(34,211,238,.16), transparent);}
+    .backdrop{position:fixed; inset:0; z-index:0; background-image:linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size:80px 80px; pointer-events:none;}
+
+    header.nav{position:sticky; top:0; z-index:20; backdrop-filter:saturate(140%) blur(10px);
+      background:linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.12)); border-bottom:1px solid rgba(255,255,255,.06)}
+    .container{max-width:72rem; margin-inline:auto; padding-inline:1rem}
+    .title-grad{background:linear-gradient(45deg, #a78bfa, #22d3ee, #f59e0b); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .card{border:1px solid rgba(255,255,255,.08); background:var(--glass); border-radius:1rem}
+    .btn{border-radius:.9rem; padding:.75rem 1rem; font-weight:700; transition:.2s ease}
+    .btn-primary{background:linear-gradient(135deg, var(--vio), var(--cyan)); color:#fff}
+    .btn-ghost{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#fff}
+    footer{border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.3)}
+    .hover-scale{transition:transform .18s ease, box-shadow .18s ease}
+    .hover-scale:hover{transform:scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.35)}
   </style>
 </head>
-<body class="text-gray-100 tech-bg">
+<body>
+  <canvas id="particles"></canvas>
+  <div class="backdrop"></div>
 
-  <header class="sticky top-0 z-50 bg-[#0b1220]/70 glass border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-      <a href="#" class="flex items-center gap-2">
-        <img src="logo.png" onerror="this.style.display='none'" alt="Logo" class="h-9 w-9 rounded-full ring-2 ring-white/10">
+  <header class="nav">
+    <div class="container py-3 flex items-center gap-3">
+      <a href="#" class="flex items-center gap-2 hover-scale">
+        <img src="logo.png" alt="Mr Presentation" class="h-9 w-9 rounded-full ring-2 ring-white/10" onerror="this.style.display='none'">
         <span class="font-extrabold text-lg">Mr Presentation</span>
       </a>
       <nav class="ms-auto hidden md:flex items-center gap-6 text-sm">
-        <a href="#services" class="hover:text-white">الخدمات</a>
-        <a href="#pricing"  class="hover:text-white">الباقات</a>
-        <a href="#faq"      class="hover:text-white">الأسئلة</a>
+        <a href="#templates" class="hover-scale">القوالب</a>
+        <a href="#pricing" class="hover-scale">الباقات</a>
+        <a href="#faq" class="hover-scale">الأسئلة</a>
       </nav>
       <div class="flex items-center gap-2">
-        <a href="https://wa.me/201141965776" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-cyan-400 px-4 py-2 text-sm font-bold text-white shadow-lg">واتساب</a>
-        <a href="tel:01141965776" class="inline-flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm">اتصال</a>
+        <a href="https://wa.me/201141965776" class="btn btn-primary hover-scale">واتساب</a>
+        <a href="tel:01141965776" class="btn btn-ghost hover-scale">اتصال</a>
       </div>
     </div>
   </header>
 
   <section class="relative">
-    <div class="relative max-w-7xl mx-auto px-4 py-16 sm:py-24 grid md:grid-cols-2 gap-10 items-center">
+    <div class="container py-14 grid md:grid-cols-2 gap-10 items-center">
       <div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">
-          نسوّي لك <span class="text-transparent bg-clip-text bg-gradient-to-br from-violet-400 to-cyan-300">عرض باوربوينت يبيض الوجه</span> ويشد الدكاترة والزملاء
-        </h1>
-        <p class="mt-4 text-gray-200/90 text-lg">نخدم الخليج والسعودية ومصر — صياغة مرتبة، تصميم احترافي، إنفوجرافيك، وتسليم سريع.</p>
+        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">نسوّي لك <span class="title-grad">عرض بوربوينت يبيض الوجه</span> ويشد الدكاترة والزملاء</h1>
+        <p class="mt-4 text-gray-200/90 text-lg">قوالب جاهزة + تصميم من الصفر. نخدم الخليج والسعودية ومصر — صياغة مرتبة، تصميم احترافي، إنفوجرافيك، وتسليم سريع.</p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <a href="#pricing" class="rounded-xl bg-white text-gray-900 px-5 py-3 font-bold">شوف الباقات</a>
-          <a href="https://www.tiktok.com/@mr_presentation" target="_blank" class="rounded-xl bg-white/10 border border-white/10 px-5 py-3">تيك توك</a>
+          <a href="#templates" class="btn btn-primary hover-scale">شوف القوالب</a>
+          <a href="#pricing" class="btn btn-ghost hover-scale">الباقات</a>
         </div>
       </div>
-
-      <div class="rounded-2xl border border-white/10 bg-black/40 p-3">
+      <div class="card p-3 hover-scale">
         <div class="aspect-[9/16] w-full rounded-xl overflow-hidden bg-black/60 flex items-center justify-center">
-          <video controls playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.closest('.rounded-2xl').style.display='none'">
+          <video controls playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.closest('.card').style.display='none'">
             <source src="work.mp4" type="video/mp4">
           </video>
         </div>
@@ -80,56 +86,82 @@
     </div>
   </section>
 
-  <section id="pricing" class="py-16 bg-black/30 border-y border-white/10">
-    <div class="max-w-7xl mx-auto px-4">
+  <section id="templates" class="relative py-14">
+    <div class="container">
+      <h2 class="text-3xl font-extrabold mb-8">القوالب الجاهزة</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="card p-4 hover-scale">
+          <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
+            <video controls playsinline preload="metadata" class="w-full h-full object-cover"><source src="template1.mp4" type="video/mp4"></video>
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div><h3 class="font-bold text-lg">قالب جاهز – Template 1</h3><p class="text-sm text-gray-300">عرض احترافي بانتقالات وإنفوجرافيك.</p></div>
+            <a class="btn btn-primary hover-scale" href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%201%20من%20Mr%20Presentation">اطلب القالب</a>
+          </div>
+        </article>
+
+        <article class="card p-4 hover-scale">
+          <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
+            <video controls playsinline preload="metadata" class="w-full h-full object-cover"><source src="template2.mp4" type="video/mp4"></video>
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div><h3 class="font-bold text-lg">قالب جاهز – Template 2</h3><p class="text-sm text-gray-300">ستايل حديث مناسب للمشاريع والبحوث.</p></div>
+            <a class="btn btn-primary hover-scale" href="https://wa.me/201141965776?text=أبغى%20قالب%20Template%202%20من%20Mr%20Presentation">اطلب القالب</a>
+          </div>
+        </article>
+      </div>
+      <p class="text-xs text-gray-400 mt-3">الملفات الأصلية PPT/PPTX جاهزة للإرسال بعد التواصل.</p>
+    </div>
+  </section>
+
+  <section id="pricing" class="py-14">
+    <div class="container">
       <h2 class="text-2xl sm:text-3xl font-extrabold mb-8">الباقات</h2>
       <div class="grid md:grid-cols-3 gap-6">
-        <div class="rounded-2xl border border-white/10 bg-white/10 p-6">
+        <div class="card p-6 hover-scale">
           <h3 class="font-extrabold text-lg mb-2">Basic</h3>
           <p class="text-gray-200 mb-4">حتى 10 شرائح | تصميم أنيق بسيط</p>
-          <div class="text-3xl font-extrabold mb-4">SAR <span>95</span></div>
-          <a href="https://wa.me/201141965776" class="w-full inline-flex justify-center rounded-xl bg-white text-gray-900 px-4 py-2 font-bold">اطلب الآن</a>
+          <div class="text-3xl font-extrabold mb-4">SAR <span>150</span></div>
+          <div class="text-xs text-gray-300 mb-4">سعر الشريحة: 15 ريال</div>
+          <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20Basic" class="btn btn-ghost w-full hover-scale">اطلب الآن</a>
         </div>
-        <div class="rounded-2xl border-2 border-violet-500/50 bg-gradient-to-br from-violet-600/30 to-cyan-400/20 p-6">
-          <div class="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-violet-600/40 text-xs mb-3">الأكثر طلبًا</div>
+        <div class="card p-6 hover-scale" style="border-color: rgba(245,158,11,.6); background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(34,211,238,.12));">
+          <div class="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-yellow-500/20 text-xs mb-3">الأكثر طلبًا</div>
           <h3 class="font-extrabold text-lg mb-2">Premium</h3>
           <p class="text-gray-100 mb-4">حتى 25 شريحة | إنفوجرافيك وانتقالات</p>
-          <div class="text-3xl font-extrabold mb-4">SAR <span>225</span></div>
-          <a href="https://wa.me/201141965776" class="w-full inline-flex justify-center rounded-xl bg-gradient-to-br from-violet-600 to-cyan-400 px-4 py-2 font-bold">احجز الآن</a>
+          <div class="text-3xl font-extrabold mb-1">SAR <span>375</span></div>
+          <div class="text-xs text-gray-200 mb-4">سعر الشريحة: 15 ريال</div>
+          <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20Premium" class="btn btn-primary w-full hover-scale">احجز الآن</a>
         </div>
-        <div class="rounded-2xl border border-white/10 bg-white/10 p-6">
+        <div class="card p-6 hover-scale">
           <h3 class="font-extrabold text-lg mb-2">VIP</h3>
           <p class="text-gray-200 mb-4">حتى 50 شريحة | كتابة نصوص + فيديو تصدير</p>
-          <div class="text-3xl font-extrabold mb-4">SAR <span>490</span></div>
-          <a href="https://wa.me/201141965776" class="w-full inline-flex justify-center rounded-xl bg-white text-gray-900 px-4 py-2 font-bold">تواصل</a>
+          <div class="text-3xl font-extrabold mb-1">SAR <span>750</span></div>
+          <div class="text-xs text-gray-300 mb-4">سعر الشريحة: 15 ريال</div>
+          <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20VIP" class="btn btn-ghost w-full hover-scale">تواصل</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="faq" class="py-16">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-2xl sm:text-3xl font-extrabold mb-8">الأسئلة المتكررة</h2>
-      <details class="group rounded-xl border border-white/10 bg-black/30 p-4">
-        <summary class="cursor-pointer marker:hidden flex items-center justify-between">
-          <span class="font-bold">التسليم كم يحتاج وقت؟</span>
-          <span class="transition rtl-flip group-open:rotate-180">▼</span>
-        </summary>
+  <section id="faq" class="py-14">
+    <div class="container">
+      <h2 class="text-2xl sm:text-3xl font-extrabold mb-6">الأسئلة المتكررة</h2>
+      <details class="card p-4 hover-scale">
+        <summary class="cursor-pointer marker:hidden flex items-center justify-between"><span class="font-bold">التسليم كم يحتاج وقت؟</span><span class="transition">▼</span></summary>
         <p class="mt-2 text-gray-200">غالبًا 24–72 ساعة حسب حجم المحتوى.</p>
       </details>
     </div>
   </section>
 
-  <footer class="py-10 border-t border-white/10 bg-black/40">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-gray-300">© <span id="y"></span> Mr Presentation. كل الحقوق محفوظة.</p>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="https://wa.me/201141965776" class="hover:text-white/90">واتساب</a>
-        <a href="tel:01141965776" class="hover:text-white/90">اتصال</a>
-      </div>
+  <footer class="py-10">
+    <div class="container flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-gray-300">© <span id="y"></span> Mr Presentation (مستر بريزنتيشن). كل الحقوق محفوظة.</p>
+      <div class="flex items-center gap-4 text-sm"><a href="https://wa.me/201141965776" class="hover-scale">واتساب</a><a href="tel:01141965776" class="hover-scale">اتصال</a></div>
     </div>
   </footer>
 
+  <script src="particles.js"></script>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
