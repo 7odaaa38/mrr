@@ -3,31 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mr Presentation | قوالب بوربوينت جاهزة وتصميم عروض احترافية</title>
+  <title>Mr Presentation | مستر بريزنتيشن — قوالب وعروض + روبوت 3D</title>
 
   <!-- SEO -->
-  <meta name="description" content="Mr Presentation | مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض تقديمية فخمة للخليج والسعودية ومصر. كتابة وصياغة، إنفوجرافيك، وتسليم سريع." />
-  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, mr presentation, مستر بريزنتيشن عروض, بوربوينت, قوالب بوربوينت, عرض تقديمي, تصميم عروض, ppt, presentation, السعودية, الخليج, قوالب ppt" />
-  <meta property="og:title" content="Mr Presentation - قوالب وعروض بوربوينت احترافية" />
-  <meta property="og:description" content="قوالب جاهزة + تصميم من الصفر. اطلب الآن عبر واتساب." />
+  <meta name="description" content="Mr Presentation | مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض تقديمية فخمة للخليج والسعودية ومصر. روبوت ثلاثي الأبعاد تفاعلي، انترو احترافي، واتساب مباشر." />
+  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, mr presentation, بوربوينت, قوالب بوربوينت, عرض تقديمي, تصميم عروض, ppt, presentation, السعودية, الخليج" />
+  <meta property="og:title" content="Mr Presentation - مستر بريزنتيشن | قوالب وعروض + 3D" />
+  <meta property="og:description" content="قوالب جاهزة + تصميم من الصفر. روبوت 3D تفاعلي وانترو واو." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="logo.png" />
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Organization","name":"Mr Presentation","alternateName":"مستر بريزنتيشن","url":"/","logo":"logo.png","sameAs":["https://www.tiktok.com/@mr_presentation"]}
-  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 3D viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
     html, body {width:100%; overflow-x:hidden; scroll-behavior:smooth;}
     body{
       font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
       color:#e5e7eb;
-      background: #0b1220 url('tech-bg.gif') no-repeat center center fixed;
-      background-size: cover;
+      background:#0b1220 url('tech-bg.gif') center/cover fixed no-repeat;
     }
     :root{--vio:#7c3aed; --cyan:#22d3ee; --gold:#f59e0b; --glass:rgba(255,255,255,.06);}
 
@@ -41,30 +39,90 @@
     .btn-ghost{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#fff}
     footer{border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.4)}
 
-    /* Hover scale */
+    /* hover */
     .hover-scale{transition:transform .18s ease, box-shadow .18s ease}
     .hover-scale:hover{transform:scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.35)}
+    .template-video{cursor:pointer}
+    .template-video:hover{filter:brightness(1.06) saturate(1.06)}
 
-    /* Make videos feel alive on hover */
-    .template-video{cursor:pointer; outline:0}
-    .template-video:hover{filter:brightness(1.05) saturate(1.05)}
+    /* social icons */
+    .social{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); transition:.18s ease}
+    .social:hover{transform:scale(1.07); box-shadow:0 8px 18px rgba(0,0,0,.35)}
+
+    /* === Intro overlay === */
+    #intro{position:fixed; inset:0; z-index:50; background:#0b1220; display:flex; align-items:center; justify-content:center; overflow:hidden}
+    #intro .halo{position:absolute; width:120vmax; height:120vmax; background:
+      radial-gradient(closest-side, rgba(124,58,237,.18), transparent 60%),
+      radial-gradient(farthest-corner at 20% 80%, rgba(34,211,238,.16), transparent 60%);
+      animation:spin 12s linear infinite; opacity:.8; pointer-events:none}
+    #intro .grid{position:absolute; inset:0; background-image:
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(0deg,  rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size:80px 80px; opacity:.18; pointer-events:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .intro-content{position:relative; z-index:2; text-align:center}
+    .intro-logo{width:110px; height:110px; border-radius:9999px; overflow:hidden; border:2px solid rgba(255,255,255,.12);
+      box-shadow:0 10px 28px rgba(0,0,0,.45); transform:scale(.8); opacity:0; animation:pop .9s ease .2s forwards}
+    @keyframes pop{to{transform:scale(1); opacity:1;}}
+
+    .intro-top{position:absolute; top:28px; right:28px; font-weight:800; font-size:30px; letter-spacing:.5px;
+      transform:translateY(-10px); opacity:0; animation:slideIn .8s ease .35s forwards}
+    .intro-bottom{position:absolute; bottom:28px; left:28px; font-weight:800; font-size:30px; letter-spacing:.5px;
+      transform:translateY(10px); opacity:0; animation:slideIn .8s ease .55s forwards}
+    @keyframes slideIn{to{transform:translateY(0); opacity:1;}}
+
+    .intro-spark{position:absolute; width:8px; height:8px; border-radius:50%; background:#fff; box-shadow:0 0 16px #fff;
+      animation:fly 2s ease-in-out infinite}
+    @keyframes fly{
+      0%{transform:translate(-20px,10px); opacity:0}
+      40%{opacity:1}
+      100%{transform:translate(40px,-25px); opacity:0}
+    }
+    .intro-skip{position:absolute; top:18px; left:18px; font-size:12px; padding:.45rem .7rem; border-radius:.6rem;
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.16); cursor:pointer}
+    .intro-fade{animation:fadeOut .65s ease forwards}
+    @keyframes fadeOut{to{opacity:0; visibility:hidden}}
   </style>
 </head>
 <body>
+
+  <!-- Intro Overlay -->
+  <div id="intro" aria-hidden="true">
+    <div class="halo"></div>
+    <div class="grid"></div>
+    <button class="intro-skip" id="skipIntro">تخطي</button>
+    <div class="intro-top">مستر</div>
+    <div class="intro-bottom">بريزنتيشن</div>
+    <div class="intro-content">
+      <img src="logo.png" alt="Logo" class="intro-logo">
+      <span class="intro-spark" style="top:48%; left:calc(50% + 60px)"></span>
+      <span class="intro-spark" style="top:52%; right:calc(50% + 60px); animation-delay:.35s"></span>
+    </div>
+  </div>
+
+  <!-- Header -->
   <header class="nav">
     <div class="container py-3 flex items-center gap-3">
       <a href="#" class="flex items-center gap-2 hover-scale" style="cursor:pointer">
         <img src="logo.png" alt="Mr Presentation" class="h-9 w-9 rounded-full ring-2 ring-white/10" onerror="this.style.display='none'">
         <span class="font-extrabold text-lg">Mr Presentation</span>
       </a>
-      <nav class="ms-auto hidden md:flex items-center gap-6 text-sm">
-        <a href="#templates" class="hover-scale">القوالب</a>
-        <a href="#pricing" class="hover-scale">الباقات</a>
-        <a href="#faq" class="hover-scale">الأسئلة</a>
-      </nav>
-      <div class="flex items-center gap-2">
-        <a href="https://wa.me/201141965776" class="btn btn-primary hover-scale">واتساب</a>
-        <a href="tel:01141965776" class="btn btn-ghost hover-scale">اتصال</a>
+      <!-- Social -->
+      <div class="flex items-center gap-2 ms-auto me-2">
+        <a class="social" target="_blank" aria-label="TikTok"
+           href="https://www.tiktok.com/@mr_presentation?_t=ZS-8ylqg8RRaD7&_r=1" title="TikTok">
+          <svg width="18" height="18" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M41 16.2c-4.8-.6-8.5-3.2-10.3-7.2V33c0 6.7-5.5 12.1-12.3 12.1S6 39.7 6 33s5.5-12.1 12.3-12.1c1 0 2 .1 2.9.3v7A5.4 5.4 0 0 0 18.3 28c-3 0-5.5 2.4-5.5 5.4s2.5 5.4 5.5 5.4S24 36.4 24 33V2h6.7c1.6 5.2 5.7 9 10.9 10.2v4z" fill="currentColor"/>
+          </svg>
+        </a>
+        <a class="social" target="_blank" aria-label="Instagram"
+           href="https://www.instagram.com/mr_presentation.1?igsh=MXRtZHpzNjljbHR1Mw==" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10zm-5 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </header>
@@ -83,13 +141,20 @@
             <a href="#pricing" class="btn btn-ghost hover-scale">الباقات</a>
           </div>
         </div>
+
+        <!-- 3D Robot -->
         <div class="card p-3 hover-scale">
-          <div class="aspect-[9/16] w-full rounded-xl overflow-hidden bg-black/60 flex items-center justify-center">
-            <video controls playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.closest('.card').style.display='none'">
-              <source src="work.mp4" type="video/mp4">
-            </video>
+          <div class="aspect-[9/16] w-full rounded-xl overflow-hidden bg-black/60">
+            <model-viewer
+              src="robot.glb"
+              autoplay animation-name="*" animation-loop
+              auto-rotate auto-rotate-delay="0"
+              camera-controls disable-tap
+              exposure="1.1" shadow-intensity="0"
+              style="width:100%; height:100%; background:transparent;">
+            </model-viewer>
           </div>
-          <p class="text-xs text-gray-300 mt-2">لو ما ظهر الفيديو، تأكد من الاسم work.mp4 في نفس المجلد.</p>
+          <p class="text-xs text-gray-300 mt-2">لو ما ظهر الروبوت، تأكد من وجود الملف <b>robot.glb</b> بجانب index.html.</p>
         </div>
       </div>
     </section>
@@ -99,12 +164,10 @@
       <div class="container">
         <h2 class="text-3xl font-extrabold mb-8">القوالب الجاهزة</h2>
         <div class="grid md:grid-cols-2 gap-6">
-          <!-- Template 1 -->
           <article class="card p-4 hover-scale">
             <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
               <video class="template-video w-full h-full object-cover" autoplay muted loop playsinline controls
-                     data-template="Template 1"
-                     title="Template 1 Preview">
+                     data-template="Template 1" title="Template 1 Preview">
                 <source src="template1.mp4" type="video/mp4">
               </video>
             </div>
@@ -118,12 +181,10 @@
             </div>
           </article>
 
-          <!-- Template 2 -->
           <article class="card p-4 hover-scale">
             <div class="aspect-video rounded-lg overflow-hidden bg-black/60">
               <video class="template-video w-full h-full object-cover" autoplay muted loop playsinline controls
-                     data-template="Template 2"
-                     title="Template 2 Preview">
+                     data-template="Template 2" title="Template 2 Preview">
                 <source src="template2.mp4" type="video/mp4">
               </video>
             </div>
@@ -171,20 +232,6 @@
         </div>
       </div>
     </section>
-
-    <!-- FAQ -->
-    <section id="faq" class="py-14">
-      <div class="container">
-        <h2 class="text-2xl sm:text-3xl font-extrabold mb-6">الأسئلة المتكررة</h2>
-        <details class="card p-4 hover-scale">
-          <summary class="cursor-pointer marker:hidden flex items-center justify-between">
-            <span class="font-bold">التسليم كم يحتاج وقت؟</span>
-            <span class="transition">▼</span>
-          </summary>
-          <p class="mt-2 text-gray-200">غالبًا 24–72 ساعة حسب حجم المحتوى.</p>
-        </details>
-      </div>
-    </section>
   </main>
 
   <footer class="py-10">
@@ -198,10 +245,21 @@
   </footer>
 
   <script>
-    // السنة في الفوتر
+    // Year
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // عند الضغط على فيديو القالب يفتح واتساب برسالة فيها اسم القالب
+    // Intro control (show once per session)
+    const intro = document.getElementById('intro');
+    const skip = document.getElementById('skipIntro');
+    const SEEN = sessionStorage.getItem('introSeen');
+    function closeIntro(){ intro.classList.add('intro-fade'); setTimeout(()=>intro.remove(), 650); }
+    if(SEEN){ closeIntro(); } else {
+      setTimeout(closeIntro, 2300);
+      sessionStorage.setItem('introSeen', '1');
+    }
+    skip?.addEventListener('click', closeIntro);
+
+    // Template video click -> WhatsApp with name
     document.querySelectorAll('.template-video').forEach(v => {
       v.addEventListener('click', () => {
         const name = encodeURIComponent(v.dataset.template || 'Template');
