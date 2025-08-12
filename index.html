@@ -3,21 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mr Presentation | مستر بريزنتيشن — قوالب وعروض + توليد PPT</title>
+  <title>Mr Presentation | مستر بريزنتيشن — قوالب + توليد PPT</title>
 
-  <!-- Meta أساسية -->
-  <meta name="description" content="مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض احترافية للخليج والسعودية ومصر. حوّل نصك إلى عرض بوربوينت تلقائيًا على الموقع." />
-  <meta property="og:title" content="Mr Presentation - مستر بريزنتيشن | قوالب + 3D + توليد عروض" />
+  <meta name="description" content="مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض احترافية. حوّل نصك إلى عرض بوربوينت تلقائيًا." />
+  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, قوالب بوربوينت, تصميم عروض, ppt, السعودية, الخليج" />
+  <meta property="og:title" content="Mr Presentation - مستر بريزنتيشن | قوالب + توليد عروض" />
   <meta property="og:description" content="اكتب نصك وحمّل عرضك فورًا. قوالب جاهزة وتصميمات مخصصة." />
   <meta property="og:image" content="logo.png" />
 
-  <!-- Fonts + Tailwind -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- 3D viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
@@ -127,7 +125,7 @@
           <p class="mt-4 text-gray-200/90 text-lg">قوالب جاهزة + تصميم من الصفر. نخدم الخليج والسعودية ومصر — تصميم احترافي، إنفوجرافيك، وتسليم سريع.</p>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="#templates" class="btn btn-primary hover-scale">شوف القوالب</a>
-            <a href="#pricing" class="btn btn-ghost hover-scale">الباقات</a>
+            <a href="#maker" class="btn btn-ghost hover-scale">جرّب توليد العرض</a>
           </div>
         </div>
 
@@ -166,8 +164,8 @@
       </div>
     </section>
 
-    <!-- Client Maker -->
-    <section id="client-maker" class="relative py-14">
+    <!-- Maker -->
+    <section id="maker" class="relative py-14">
       <div class="container">
         <h2 class="text-3xl font-extrabold mb-6">حوّل نصك إلى بوربوينت تلقائيًا</h2>
 
@@ -272,7 +270,7 @@
     </div>
   </footer>
 
-  <!-- إغلاق الانترو -->
+  <!-- Intro close -->
   <script>
     const intro = document.getElementById('intro');
     const skip  = document.getElementById('skipIntro');
@@ -286,6 +284,18 @@
   <!-- PptxGenJS -->
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
   <script>
+    // انتظار تحميل المكتبة بشكل مؤكد
+    function ensurePptxReady(timeoutMs=6000){
+      return new Promise((resolve, reject)=>{
+        const started = Date.now();
+        (function check(){
+          if (window.PptxGenJS) return resolve(true);
+          if (Date.now()-started > timeoutMs) return reject(new Error('PptxGenJS لم تُحمّل'));
+          setTimeout(check, 120);
+        })();
+      });
+    }
+
     const TOPIC_IMAGES = {
       cyber:     { path: 'assets/cyber/',     count: 10 },
       marketing: { path: 'assets/marketing/', count: 10 },
@@ -293,16 +303,18 @@
       general:   { path: 'assets/general/',   count: 0  }
     };
 
-    async function urlToDataURL(url) {
-      try {
-        const res = await fetch(url);
-        const blob = await res.blob();
-        return await new Promise((resolve) => {
-          const r = new FileReader();
-          r.onloadend = () => resolve(r.result);
-          r.readAsDataURL(blob);
-        });
-      } catch(e) { console.warn('Image fetch failed:', url, e); return null; }
+    // تحميل صورة مع مهلة — لو فشلت نرجّع null وما نوقفش التوليد
+    function fetchWithTimeout(url, ms=4000){
+      return new Promise((resolve)=>{
+        const to = setTimeout(()=>resolve(null), ms);
+        fetch(url).then(r=>r.ok?r.blob():null).then(b=>{
+          clearTimeout(to);
+          if(!b) return resolve(null);
+          const fr = new FileReader();
+          fr.onloadend = ()=>resolve(fr.result);
+          fr.readAsDataURL(b);
+        }).catch(()=>resolve(null));
+      });
     }
 
     function splitTextIntoSlides(text, desiredCount) {
@@ -331,7 +343,7 @@
       const i1 = pick(topic.count), i2 = pick(topic.count);
       const u1 = topic.path + i1 + '.jpg';
       const u2 = topic.path + i2 + '.jpg';
-      const [d1, d2] = await Promise.all([urlToDataURL(u1), urlToDataURL(u2)]);
+      const [d1, d2] = await Promise.all([fetchWithTimeout(u1), fetchWithTimeout(u2)]);
       if (d1) slide.addImage({ data: d1, x: 0.5, y: 4.5, w: 4.5, h: 3.0 });
       if (d2) slide.addImage({ data: d2, x: 5.1, y: 4.5, w: 4.5, h: 3.0 });
     }
@@ -345,8 +357,16 @@
       const langSel = document.getElementById('lang').value;
 
       if (!txt) { status.textContent = 'اكتب النص أولاً.'; return; }
-      status.textContent = 'جاري تجهيز الملف...';
 
+      status.textContent = 'جاري تجهيز الملف... (تحميل المكتبة)';
+      try{
+        await ensurePptxReady();
+      }catch(e){
+        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. جرب إعادة تحميل الصفحة.';
+        return;
+      }
+
+      status.textContent = 'جاري تجهيز الملف... (تقسيم الشرائح)';
       const slidesText = splitTextIntoSlides(txt, isNaN(count) ? undefined : count);
 
       const pptx = new PptxGenJS();
@@ -356,6 +376,7 @@
 
       if (bg) pptx.defineSlideMaster({ title:'MASTER_BG', background:{ path:bg }, objects:[] });
 
+      status.textContent = 'جاري تجهيز الملف... (إنشاء الشرائح)';
       const cover = pptx.addSlide(bg ? { masterName:'MASTER_BG' } : {});
       cover.addText('Mr Presentation | مستر بريزنتيشن', { x:0.5, y:1.0, w:9.0, h:1.0, fontSize:28, bold:true, color:'FFFFFF', align:rtl?'right':'left' });
       cover.addText('تم إنشاء العرض تلقائيًا من نص العميل', { x:0.5, y:2.0, w:9.0, h:0.6, fontSize:16, color:'DADADA', align:rtl?'right':'left' });
@@ -370,9 +391,14 @@
       const end = pptx.addSlide(bg ? { masterName:'MASTER_BG' } : {});
       end.addText('تم — شكراً لكم', { x:0.5, y:3.5, w:9.0, h:1.0, fontSize:26, bold:true, color:'FFFFFF', align:'center' });
 
+      status.textContent = 'جاري تجهيز الملف... (تصدير)';
       const fileName = `MrPresentation_${topic}_${Date.now()}.pptx`;
-      await pptx.writeFile({ fileName });
-      status.textContent = 'تم إنشاء الملف وتحميله ✅';
+      try{
+        await pptx.writeFile({ fileName });
+        status.textContent = 'تم إنشاء الملف وتحميله ✅';
+      }catch(e){
+        status.textContent = 'حصل خطأ أثناء حفظ الملف. جرّب نص أقصر أو قلّل الصور.';
+      }
     });
   </script>
 </body>
