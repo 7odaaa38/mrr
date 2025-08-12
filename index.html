@@ -3,19 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mr Presentation | مستر بريزنتيشن — قوالب + توليد PPT</title>
+  <title>Mr Presentation | مستر بريزنتيشن — نص/ملفات → بوربوينت (أوفلاين)</title>
 
-  <meta name="description" content="مستر بريزنتيشن — قوالب بوربوينت جاهزة وتصميم عروض احترافية. حوّل نصك إلى عرض بوربوينت تلقائيًا." />
-  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, قوالب بوربوينت, تصميم عروض, ppt, السعودية, الخليج" />
-  <meta property="og:title" content="Mr Presentation - مستر بريزنتيشن | قوالب + توليد عروض" />
-  <meta property="og:description" content="اكتب نصك وحمّل عرضك فورًا. قوالب جاهزة وتصميمات مخصصة." />
+  <meta name="description" content="حوّل نصك أو ملفات PDF/DOCX/TXT إلى عرض بوربوينت مع صور وخلفيات محلية لكل تخصص — يعمل بدون CDN." />
+  <meta name="keywords" content="Mr Presentation, مستر بريزنتيشن, تحويل PDF إلى بوربوينت, DOCX إلى PPT, قوالب, السعودية, الخليج" />
   <meta property="og:image" content="logo.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <!-- مكتبات محلية (حمّلها في فولدر libs جنب index.html) -->
+  <script defer src="libs/pptxgen.bundle.js"></script>
+  <script defer src="libs/mammoth.browser.min.js"></script>
+  <script defer src="libs/pdf.min.js"></script>
+  <script>
+    // تهيئة pdf.js worker من نفس فولدر libs
+    window.pdfjsLib = window['pdfjs-dist/build/pdf'];
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'libs/pdf.worker.min.js';
+    }
+  </script>
 
   <style>
     html, body {width:100%; overflow-x:hidden; scroll-behavior:smooth;}
@@ -25,7 +36,6 @@
       background:#0b1220 url('tech-bg.gif') center/cover fixed no-repeat;
     }
     :root{--vio:#7c3aed; --cyan:#22d3ee; --gold:#f59e0b; --glass:rgba(255,255,255,.06);}
-
     header.nav{position:sticky; top:0; z-index:20; backdrop-filter:saturate(140%) blur(10px);
       background:linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.12)); border-bottom:1px solid rgba(255,255,255,.06)}
     .container{max-width:72rem; margin-inline:auto; padding-inline:1rem}
@@ -165,23 +175,37 @@
     <!-- Maker -->
     <section id="maker" class="relative py-14">
       <div class="container">
-        <h2 class="text-3xl font-extrabold mb-6">حوّل نصك إلى بوربوينت تلقائيًا</h2>
+        <h2 class="text-3xl font-extrabold mb-6">حوّل نصك أو ملفاتك إلى بوربوينت</h2>
 
         <div class="grid md:grid-cols-2 gap-6">
           <div class="card p-4">
-            <label class="block mb-2 font-semibold">النص (عربي أو إنجليزي):</label>
-            <textarea id="pptText" class="w-full h-56 rounded-md p-3 text-black" placeholder="اكتب أو الصق النص هنا.
-افصل بين الشرائح بـ /// (اختياري)"></textarea>
+            <label class="block font-semibold mb-2">المصدر:</label>
+            <div class="flex flex-wrap gap-3 mb-4 text-sm">
+              <label class="inline-flex items-center gap-2"><input type="radio" name="src" value="text" checked> نص يدوي</label>
+              <label class="inline-flex items-center gap-2"><input type="radio" name="src" value="file"> ملف (PDF / DOCX / TXT)</label>
+            </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-4">
+            <div id="textBoxWrap">
+              <label class="block mb-2 font-semibold">النص (عربي أو إنجليزي):</label>
+              <textarea id="pptText" class="w-full h-48 rounded-md p-3 text-black" placeholder="اكتب أو الصق النص هنا.
+افصل بين الشرائح بـ /// (اختياري)"></textarea>
+            </div>
+
+            <div id="fileBoxWrap" class="hidden">
+              <label class="block mb-2 font-semibold">ارفع ملفك:</label>
+              <input id="fileInput" type="file" accept=".pdf,.docx,.txt" class="w-full rounded-md p-2 bg-white text-black" />
+              <p class="text-xs text-gray-300 mt-2">PDF: كل صفحة = شريحة (أو تقسيم ذكي). DOCX/TXT: تقسيم تلقائي أو بفواصل ///.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-4">
               <div>
                 <label class="block mb-2 font-semibold">عدد الشرائح (اختياري):</label>
-                <input id="slideCount" type="number" min="1" class="w-full rounded-md p-2 text-black" placeholder="اتركه فاضي للتقسيم التلقائي" />
+                <input id="slideCount" type="number" min="1" class="w-full rounded-md p-2 text-black" placeholder="سيبها فاضية للتقسيم التلقائي" />
               </div>
               <div>
                 <label class="block mb-2 font-semibold">التخصص/الموضوع:</label>
                 <select id="topic" class="w-full rounded-md p-2 text-black">
-                  <option value="cyber">Cyber Security</option>
+                  <option value="cyber">Cyber</option>
                   <option value="marketing">Marketing</option>
                   <option value="dentist">Dentist</option>
                   <option value="heart">Heart</option>
@@ -193,14 +217,16 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-4">
+            <div class="grid sm:grid-cols-2 gap-4 mt-4">
               <div>
-                <label class="block mb-2 font-semibold">خلفية الشرائح:</label>
-                <select id="bgStyle" class="w-full rounded-md p-2 text-black">
-                  <option value="assets/bg-tech.jpg">خلفية تِك</option>
-                  <option value="assets/bg-clean.jpg">خلفية بسيطة</option>
-                  <option value="">بدون خلفية</option>
+                <label class="block mb-2 font-semibold">خلفية السلايد:</label>
+                <select id="bgImage" class="w-full rounded-md p-2 text-black">
+                  <option value="">بدون</option>
+                  <option value="assets/bg-tech.jpg">bg-tech.jpg</option>
+                  <option value="assets/bg-clean.jpg">bg-clean.jpg</option>
+                  <option value="assets/bg-gradient.jpg">bg-gradient.jpg</option>
                 </select>
+                <p class="text-xs text-gray-300 mt-1">لو فيه <code>assets/[topic]/bg.jpg</code> أو <code>bg.png</code> هياخدها تلقائي.</p>
               </div>
               <div>
                 <label class="block mb-2 font-semibold">لغة النص:</label>
@@ -212,50 +238,32 @@
               </div>
             </div>
 
-            <button id="genBtn" class="btn btn-primary hover-scale mt-5">توليد ملف بوربوينت</button>
+            <div class="grid sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label class="block mb-2 font-semibold">وضع PDF:</label>
+                <select id="pdfMode" class="w-full rounded-md p-2 text-black">
+                  <option value="pages">كل صفحة = شريحة</option>
+                  <option value="smart">تقسيم ذكي</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-2 font-semibold">صور لكل شريحة:</label>
+                <input id="imgsPerSlide" type="number" min="0" max="4" value="2" class="w-full rounded-md p-2 text-black" />
+              </div>
+            </div>
+
+            <button id="genBtn" class="btn btn-primary hover-scale mt-5 w-full">توليد ملف بوربوينت</button>
             <div id="genStatus" class="text-sm text-gray-200 mt-3"></div>
           </div>
 
           <div class="card p-4">
-            <h3 class="font-bold text-lg mb-2">إرشادات سريعة</h3>
-            <ul class="list-disc ps-6 text-sm text-gray-200">
-              <li>افصل الشرائح بـ <b>///</b> لو عايز تحكّم يدوي.</li>
-              <li>بدون فواصل: بنقسّم تلقائي حسب عدد الشرائح اللي تختاره.</li>
-              <li>صورتين تلقائيًا لكل شريحة من فولدر الموضوع (ما عدا Company/general).</li>
-              <li>ارفع صور الموضوع داخل <code>assets/[topic]/</code> بأسماء: <code>1.jpg</code>، <code>2.jpg</code>…</li>
-              <li>غيّر الخلفية من القائمة فوق (ملفات داخل <code>assets/</code>).</li>
+            <h3 class="font-bold text-lg mb-2">إرشادات</h3>
+            <ul class="list-disc ps-6 text-sm text-gray-200 space-y-1">
+              <li>PDF: اختر “كل صفحة = شريحة” أو “تقسيم ذكي”.</li>
+              <li>DOCX: هنستخرج النص ونقسم تلقائيًا أو بفواصل <b>///</b>.</li>
+              <li>الخلفية: لو فيه ملف <code>bg.jpg/png</code> داخل مجلد التخصص، هيتطبق تلقائيًا، وإلا نستخدم القائمة.</li>
+              <li>الصور محلية فقط: ضيفها في <code>assets/[topic]/1.jpg …</code> وسيتم الاختيار عشوائيًا لكل شريحة.</li>
             </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing -->
-    <section id="pricing" class="py-14">
-      <div class="container">
-        <h2 class="text-2xl sm:text-3xl font-extrabold mb-8">الباقات</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="card p-6 hover-scale">
-            <h3 class="font-extrabold text-lg mb-2">Basic</h3>
-            <p class="text-gray-200 mb-4">حتى 10 شرائح | تصميم أنيق بسيط</p>
-            <div class="text-3xl font-extrabold mb-4">SAR <span>150</span></div>
-            <div class="text-xs text-gray-300 mb-4">سعر الشريحة: 15 ريال</div>
-            <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20Basic" class="btn btn-ghost w-full hover-scale">اطلب الآن</a>
-          </div>
-          <div class="card p-6 hover-scale" style="border-color: rgba(245,158,11,.6); background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(34,211,238,.12));">
-            <div class="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-yellow-500/20 text-xs mb-3">الأكثر طلبًا</div>
-            <h3 class="font-extrabold text-lg mb-2">Premium</h3>
-            <p class="text-gray-100 mb-4">حتى 25 شريحة | إنفوجرافيك وانتقالات</p>
-            <div class="text-3xl font-extrabold mb-1">SAR <span>375</span></div>
-            <div class="text-xs text-gray-200 mb-4">سعر الشريحة: 15 ريال</div>
-            <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20Premium" class="btn btn-primary w-full hover-scale">احجز الآن</a>
-          </div>
-          <div class="card p-6 hover-scale">
-            <h3 class="font-extrabold text-lg mb-2">VIP</h3>
-            <p class="text-gray-200 mb-4">حتى 50 شريحة | كتابة نصوص + فيديو تصدير</p>
-            <div class="text-3xl font-extrabold mb-1">SAR <span>750</span></div>
-            <div class="text-xs text-gray-300 mb-4">سعر الشريحة: 15 ريال</div>
-            <a href="https://wa.me/201141965776?text=أرغب%20بباقة%20VIP" class="btn btn-ghost w-full hover-scale">تواصل</a>
           </div>
         </div>
       </div>
@@ -283,47 +291,71 @@
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 
-  <!-- PptxGenJS loader with multi-CDN fallbacks -->
+  <!-- أدوات مساعدة للصور/local -->
   <script>
-    const CDN_URLS = [
-      'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js',
-      'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.min.js'
-    ];
-    function loadScript(url, timeout=7000){
-      return new Promise((resolve, reject)=>{
-        const s = document.createElement('script');
-        s.src = url; s.async = true; s.crossOrigin = 'anonymous';
-        const to = setTimeout(()=>{ s.remove(); reject(new Error('timeout')); }, timeout);
-        s.onload = ()=>{ clearTimeout(to); resolve(url); };
-        s.onerror = ()=>{ clearTimeout(to); reject(new Error('error')); };
-        document.head.appendChild(s);
-      });
-    }
-    async function ensurePptxReady(timeoutPer=7000){
-      if (window.PptxGenJS) return true;
-      for (const url of CDN_URLS){
-        try { await loadScript(url, timeoutPer); if (window.PptxGenJS) return true; } catch(e){/* try next */}
-      }
-      throw new Error('تعذّر تحميل مكتبة PptxGenJS من جميع الـCDNs');
-    }
-  </script>
-
-  <!-- Helper: read local image as dataURL -->
-  <script>
-    function getLocalImageBase64(url){
+    // قراءة صورة محلية وتحويلها لـ dataURL (نستخدمها كما هي مع pptxgen)
+    function readLocalAsDataURL(url){
       return new Promise((resolve)=>{
-        fetch(url).then(r=>r.ok?r.blob():null).then(b=>{
-          if(!b) return resolve(null);
-          const fr = new FileReader();
-          fr.onloadend = ()=>resolve(fr.result);
-          fr.readAsDataURL(b);
-        }).catch(()=>resolve(null));
+        fetch(url, {cache:'no-store'})
+          .then(r=>r.ok?r.blob():null)
+          .then(b=>{
+            if(!b) return resolve(null);
+            const fr = new FileReader();
+            fr.onloadend = ()=>resolve(fr.result);
+            fr.readAsDataURL(b);
+          }).catch(()=>resolve(null));
       });
+    }
+
+    // محاولة إيجاد خلفية لكل Topic: assets/[topic]/bg.jpg|png وإلا نستخدم اختيار المستخدم
+    async function resolveBackground(topic, userBg){
+      const candidates = [`assets/${topic}/bg.jpg`, `assets/${topic}/bg.png`];
+      for (const c of candidates){
+        try{
+          const r = await fetch(c, { method:'HEAD', cache:'no-store' });
+          if (r.ok) return c;
+        }catch{}
+      }
+      return userBg || '';
     }
   </script>
 
-  <!-- PPT maker logic -->
+  <!-- منطق قراءة الملفات (PDF/DOCX/TXT) -->
+  <script>
+    async function readTxt(file){ return await file.text(); }
+
+    async function readDocx(file){
+      const arrayBuffer = await file.arrayBuffer();
+      const res = await mammoth.extractRawText({ arrayBuffer });
+      return (res && res.value) ? res.value : '';
+    }
+
+    async function readPdf(file, mode='pages'){
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      const pages = [];
+      for (let p=1; p<=pdf.numPages; p++){
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        const strings = content.items.map(i => i.str).filter(Boolean);
+        const text = strings.join(' ').replace(/\s+/g,' ').trim();
+        pages.push(text);
+      }
+      if (mode === 'pages') return pages;
+      // smart merge
+      const merged = [];
+      let acc = '';
+      pages.forEach((t,i)=>{
+        const next = acc ? (acc + ' ' + t) : t;
+        if (next.length < 900) acc = next;
+        else { merged.push(acc); acc = t; }
+        if (i===pages.length-1 && acc) merged.push(acc);
+      });
+      return merged;
+    }
+  </script>
+
+  <!-- منطق التوليد -->
   <script>
     const TOPIC_IMAGES = {
       cyber:     { path: 'assets/cyber/',     count: 50 },
@@ -338,7 +370,7 @@
 
     function splitTextIntoSlides(text, desiredCount) {
       if (text.includes('///')) return text.split('///').map(s => s.trim()).filter(Boolean);
-      const paragraphs = text.split(/\\n{2,}/).map(p => p.trim()).filter(Boolean);
+      const paragraphs = text.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
       if (!desiredCount || desiredCount < 1) {
         const chunks = []; let buf = [];
         paragraphs.forEach((p, i) => { buf.push(p); if (buf.length >= 2 || i === paragraphs.length - 1) { chunks.push(buf.join('\\n\\n')); buf = []; } });
@@ -355,69 +387,141 @@
       }
     }
 
-    async function addTopicImagesToSlide(slide, topicKey) {
+    async function addTopicImagesToSlide(slide, topicKey, imgsPerSlide){
+      if (!imgsPerSlide) return;
       const topic = TOPIC_IMAGES[topicKey] || TOPIC_IMAGES.general;
       if (!topic.count || !topic.path) return;
       const pick = (max) => Math.max(1, Math.floor(Math.random() * max));
-      const i1 = pick(topic.count), i2 = pick(topic.count);
-      const u1 = topic.path + i1 + '.jpg';
-      const u2 = topic.path + i2 + '.jpg';
-      const [d1, d2] = await Promise.all([getLocalImageBase64(u1), getLocalImageBase64(u2)]);
-      if (d1) slide.addImage({ data: d1, x: 0.5, y: 4.5, w: 4.5, h: 3.0 });
-      if (d2) slide.addImage({ data: d2, x: 5.1, y: 4.5, w: 4.5, h: 3.0 });
+      const slots = [
+        { x:0.5, y:4.55, w:4.5, h:3.0 },
+        { x:5.1, y:4.55, w:4.5, h:3.0 },
+        { x:0.5, y:1.0,  w:3.4, h:2.2 },
+        { x:6.1, y:1.0,  w:3.4, h:2.2 },
+      ].slice(0, Math.min(imgsPerSlide, 4));
+
+      const picks = Array.from({length: slots.length}, ()=> pick(topic.count));
+      const urls  = picks.map(i => `${topic.path}${i}.jpg`);
+      const datas = await Promise.all(urls.map(u => readLocalAsDataURL(u)));
+      datas.forEach((d,i)=>{ if(d) slide.addImage({ data:d, ...slots[i] }); });
     }
 
-    const status = document.getElementById('genStatus');
-    document.getElementById('genBtn')?.addEventListener('click', async () => {
-      const txt = document.getElementById('pptText').value.trim();
-      const count = parseInt(document.getElementById('slideCount').value, 10);
-      const topic = document.getElementById('topic').value;
-      const bg = document.getElementById('bgStyle').value;
-      const langSel = document.getElementById('lang').value;
+    document.addEventListener('DOMContentLoaded', () => {
+      const srcRadios   = document.getElementsByName('src');
+      const textBoxWrap = document.getElementById('textBoxWrap');
+      const fileBoxWrap = document.getElementById('fileBoxWrap');
+      srcRadios.forEach(r => r.addEventListener('change', () => {
+        const isText = document.querySelector('input[name="src"]:checked').value === 'text';
+        textBoxWrap.classList.toggle('hidden', !isText);
+        fileBoxWrap.classList.toggle('hidden', isText);
+      }));
 
-      if (!txt) { status.textContent = 'اكتب النص أولاً.'; return; }
+      const status = document.getElementById('genStatus');
+      document.getElementById('genBtn')?.addEventListener('click', async () => {
+        const srcType = document.querySelector('input[name="src"]:checked').value;
+        const txtEl   = document.getElementById('pptText');
+        const fileEl  = document.getElementById('fileInput');
+        const topic   = document.getElementById('topic').value;
+        const userBg  = document.getElementById('bgImage').value;
+        const langSel = document.getElementById('lang').value;
+        const pdfMode = document.getElementById('pdfMode').value;
+        const imgsPerSlide = parseInt(document.getElementById('imgsPerSlide').value, 10) || 0;
+        const count   = parseInt(document.getElementById('slideCount').value, 10);
 
-      status.textContent = 'جاري تجهيز الملف... (تحميل المكتبة)';
-      try{
-        await ensurePptxReady();
-      }catch(e){
-        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. جرّب تعطيل Ad‑Block أو إعادة تحميل الصفحة.';
-        return;
-      }
+        status.textContent = 'جاري التحضير...';
 
-      status.textContent = 'جاري تجهيز الملف... (تقسيم الشرائح)';
-      const slidesText = splitTextIntoSlides(txt, isNaN(count) ? undefined : count);
+        if (typeof PptxGenJS === 'undefined'){
+          status.textContent = 'تعذّر تحميل مكتبة البوربوينت (تأكد من libs/pptxgen.bundle.js).';
+          return;
+        }
 
-      const pptx = new PptxGenJS();
-      pptx.layout = 'LAYOUT_16x9';
-      const rtl = (langSel === 'ar') || (langSel === 'auto' && /[\\u0600-\\u06FF]/.test(txt));
-      pptx.rtlMode = rtl;
+        // اجمع نص الشرائح من النص أو الملف
+        let slidesText = [];
+        try{
+          if (srcType === 'text'){
+            const raw = (txtEl.value || '').trim();
+            if (!raw){ status.textContent = 'اكتب النص أولاً.'; return; }
+            slidesText = splitTextIntoSlides(raw, isNaN(count) ? undefined : count);
+          } else {
+            const file = fileEl.files?.[0];
+            if (!file){ status.textContent = 'اختَر ملف أولاً.'; return; }
+            const ext = file.name.toLowerCase().split('.').pop();
+            if (ext === 'pdf'){
+              const arr = await readPdf(file, pdfMode);
+              slidesText = isNaN(count) ? arr : splitTextIntoSlides(arr.join('\\n\\n'), count);
+            } else if (ext === 'docx'){
+              const text = await readDocx(file);
+              slidesText = splitTextIntoSlides(text, isNaN(count) ? undefined : count);
+            } else if (ext === 'txt'){
+              const text = await readTxt(file);
+              slidesText = splitTextIntoSlides(text, isNaN(count) ? undefined : count);
+            } else {
+              status.textContent = 'صيغة غير مدعومة. ارفع PDF أو DOCX أو TXT.';
+              return;
+            }
+          }
+        }catch(e){
+          console.error(e);
+          status.textContent = 'حصل خطأ أثناء قراءة الملف. جرّب ملف أبسط أو صيغة مختلفة.';
+          return;
+        }
+        if (!slidesText.length){ status.textContent = 'مافيش محتوى كفاية لعمل شرائح.'; return; }
 
-      if (bg) pptx.defineSlideMaster({ title:'MASTER_BG', background:{ path:bg }, objects:[] });
+        status.textContent = 'جاري إنشاء العرض...';
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+        const rtl = (langSel === 'ar') || (langSel === 'auto' && /[\\u0600-\\u06FF]/.test(slidesText.join(' ')));
+        pptx.rtlMode = rtl;
 
-      status.textContent = 'جاري تجهيز الملف... (إنشاء الشرائح)';
-      const cover = pptx.addSlide(bg ? { masterName:'MASTER_BG' } : {});
-      cover.addText('Mr Presentation | مستر بريزنتيشن', { x:0.5, y:1.0, w:9.0, h:1.0, fontSize:28, bold:true, color:'FFFFFF', align:rtl?'right':'left' });
-      cover.addText('تم إنشاء العرض تلقائيًا من نص العميل', { x:0.5, y:2.0, w:9.0, h:0.6, fontSize:16, color:'DADADA', align:rtl?'right':'left' });
+        // حدّد الخلفية (خاصة بالقسم لو موجودة)
+        const bgResolved = await resolveBackground(topic, userBg);
+        let useMaster = false;
+        if (bgResolved){
+          pptx.defineSlideMaster({ title:'MASTER_BG', background:{ path:bgResolved }, objects:[] });
+          useMaster = true;
+        }
 
-      for (let i=0;i<slidesText.length;i++){
-        const s = pptx.addSlide(bg ? { masterName:'MASTER_BG' } : {});
-        s.addText(`الشريحة ${i+1}`, { x:0.5, y:0.5, w:9.0, fontSize:22, bold:true, color:'FFFFFF', align:rtl?'right':'left' });
-        s.addText(slidesText[i], { x:0.7, y:1.3, w:8.6, h:2.9, fontSize:16, color:'FFFFFF', align:rtl?'right':'left', bullet:true });
-        await addTopicImagesToSlide(s, topic);
-      }
+        // غلاف
+        const cover = pptx.addSlide(useMaster ? { masterName:'MASTER_BG' } : {});
+        cover.addText('Mr Presentation | مستر بريزنتيشن', { x:0.5, y:0.7, w:9.0, h:0.8, fontSize:28, bold:true, color:'FFFFFF', align:rtl?'right':'left' });
+        cover.addText('تم إنشاء العرض تلقائيًا من نص/ملف العميل', { x:0.5, y:1.5, w:9.0, h:0.6, fontSize:16, color:'DADADA', align:rtl?'right':'left' });
 
-      const end = pptx.addSlide(bg ? { masterName:'MASTER_BG' } : {});
-      end.addText('تم — شكراً لكم', { x:0.5, y:3.5, w:9.0, h:1.0, fontSize:26, bold:true, color:'FFFFFF', align:'center' });
+        // الشرائح
+        for (let i=0; i<slidesText.length; i++){
+          const s = pptx.addSlide(useMaster ? { masterName:'MASTER_BG' } : {});
+          s.addText(`الشريحة ${i+1}`, { x:0.5, y:0.5, w:9.0, fontSize:22, bold:true, color:'FFFFFF', align:rtl?'right':'left' });
+          s.addText(slidesText[i], { x:0.7, y:1.3, w:8.6, h:2.9, fontSize:16, color:'FFFFFF', align:rtl?'right':'left', bullet:true });
+          await addTopicImagesToSlide(s, topic, imgsPerSlide);
+        }
 
-      status.textContent = 'جاري تجهيز الملف... (تصدير)';
-      const fileName = `MrPresentation_${topic}_${Date.now()}.pptx`;
-      try{
-        await pptx.writeFile({ fileName });
-        status.textContent = 'تم إنشاء الملف وتحميله ✅';
-      }catch(e){
-        status.textContent = 'حصل خطأ أثناء حفظ الملف. جرّب نص أقصر أو قلّل الصور.';
-      }
+        // ختامية
+        const end = pptx.addSlide(useMaster ? { masterName:'MASTER_BG' } : {});
+        end.addText('تم — شكراً لكم', { x:0.5, y:3.5, w:9.0, h:1.0, fontSize:26, bold:true, color:'FFFFFF', align:'center' });
+
+        status.textContent = 'جاري التحميل...';
+        const fileName = `MrPresentation_${topic}_${Date.now()}.pptx`;
+        try {
+          await pptx.writeFile({ fileName }); // التحميل العادي
+          status.textContent = 'تم إنشاء الملف وتحميله ✅';
+        } catch (e) {
+          // Fallback ضد الحظر/الإضافات
+          try{
+            const blob = await pptx.write('blob');
+            const url  = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(()=>{
+              window.open(url, '_blank','noopener');
+              URL.revokeObjectURL(url);
+              a.remove();
+            }, 400);
+            status.textContent = 'تم إنشاء الملف — لو لم يبدأ التحميل تلقائيًا، تم فتحه في تبويب جديد.';
+          }catch(err){
+            status.textContent = 'حصل خطأ أثناء حفظ الملف. قلّل حجم النص أو الصور وجرب ثانية.';
+          }
+        }
+      });
     });
   </script>
 </body>
