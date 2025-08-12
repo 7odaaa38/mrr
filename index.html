@@ -17,6 +17,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
+  <!-- ✅ محلي أولاً لتفادي الحجب/الإضافات -->
+  <script src="libs/pptxgen.bundle.js"></script>
+
   <style>
     html, body {width:100%; overflow-x:hidden; scroll-behavior:smooth;}
     body{
@@ -279,7 +282,7 @@
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 
-  <!-- PptxGenJS loader with multi-CDN fallbacks -->
+  <!-- CDN fallback (in case local file not present) -->
   <script>
     const CDN_URLS = [
       'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js',
@@ -299,9 +302,9 @@
     async function ensurePptxReady(timeoutPer=7000){
       if (window.PptxGenJS) return true;
       for (const url of CDN_URLS){
-        try { await loadScript(url, timeoutPer); if (window.PptxGenJS) return true; } catch(e){/* try next */}
+        try { await loadScript(url, timeoutPer); if (window.PptxGenJS) return true; } catch(e){}
       }
-      throw new Error('تعذّر تحميل مكتبة PptxGenJS من جميع الـCDNs');
+      throw new Error('تعذّر تحميل مكتبة PptxGenJS محليًا ولا من الـCDNs');
     }
   </script>
 
@@ -332,7 +335,7 @@
       const paragraphs = text.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
       if (!desiredCount || desiredCount < 1) {
         const chunks = []; let buf = [];
-        paragraphs.forEach((p, i) => { buf.push(p); if (buf.length >= 2 || i === paragraphs.length - 1) { chunks.push(buf.join('\\n\\n')); buf = []; } });
+        paragraphs.forEach((p, i) => { buf.push(p); if (buf.length >= 2 || i === paragraphs.length - 1) { chunks.push(buf.join('\n\n')); buf = []; } });
         return chunks.length ? chunks : [text];
       } else {
         const per = Math.ceil(paragraphs.length / desiredCount);
@@ -340,7 +343,7 @@
         for (let i = 0; i < desiredCount; i++) {
           const start = i * per;
           const slice = paragraphs.slice(start, start + per);
-          if (slice.length) slides.push(slice.join('\\n\\n'));
+          if (slice.length) slides.push(slice.join('\n\n'));
         }
         return slides.length ? slides : [text];
       }
@@ -372,7 +375,7 @@
       try{
         await ensurePptxReady();
       }catch(e){
-        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. جرّب تعطيل Ad‑Block أو إعادة تحميل الصفحة.';
+        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. تأكد من وجود libs/pptxgen.bundle.js أو عطّل Ad‑Block مؤقتًا.';
         return;
       }
 
