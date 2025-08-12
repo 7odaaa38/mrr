@@ -15,7 +15,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
@@ -38,7 +37,6 @@
     .hover-scale:hover{transform:scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.35)}
     footer{border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.4)}
 
-    /* social */
     .social{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px;
       background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); transition:.18s ease}
     .social:hover{transform:scale(1.07); box-shadow:0 8px 18px rgba(0,0,0,.35)}
@@ -281,21 +279,34 @@
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 
-  <!-- PptxGenJS -->
-  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+  <!-- PptxGenJS loader with multi-CDN fallbacks -->
   <script>
-    // انتظار تحميل المكتبة بشكل مؤكد
-    function ensurePptxReady(timeoutMs=6000){
+    const CDN_URLS = [
+      'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js',
+      'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.min.js'
+    ];
+    function loadScript(url, timeout=7000){
       return new Promise((resolve, reject)=>{
-        const started = Date.now();
-        (function check(){
-          if (window.PptxGenJS) return resolve(true);
-          if (Date.now()-started > timeoutMs) return reject(new Error('PptxGenJS لم تُحمّل'));
-          setTimeout(check, 120);
-        })();
+        const s = document.createElement('script');
+        s.src = url; s.async = true; s.crossOrigin = 'anonymous';
+        const to = setTimeout(()=>{ s.remove(); reject(new Error('timeout')); }, timeout);
+        s.onload = ()=>{ clearTimeout(to); resolve(url); };
+        s.onerror = ()=>{ clearTimeout(to); reject(new Error('error')); };
+        document.head.appendChild(s);
       });
     }
+    async function ensurePptxReady(timeoutPer=7000){
+      if (window.PptxGenJS) return true;
+      for (const url of CDN_URLS){
+        try { await loadScript(url, timeoutPer); if (window.PptxGenJS) return true; } catch(e){/* try next */}
+      }
+      throw new Error('تعذّر تحميل مكتبة PptxGenJS من جميع الـCDNs');
+    }
+  </script>
 
+  <!-- PPT maker logic -->
+  <script>
     const TOPIC_IMAGES = {
       cyber:     { path: 'assets/cyber/',     count: 10 },
       marketing: { path: 'assets/marketing/', count: 10 },
@@ -303,8 +314,7 @@
       general:   { path: 'assets/general/',   count: 0  }
     };
 
-    // تحميل صورة مع مهلة — لو فشلت نرجّع null وما نوقفش التوليد
-    function fetchWithTimeout(url, ms=4000){
+    function fetchWithTimeout(url, ms=4500){
       return new Promise((resolve)=>{
         const to = setTimeout(()=>resolve(null), ms);
         fetch(url).then(r=>r.ok?r.blob():null).then(b=>{
@@ -322,7 +332,7 @@
       const paragraphs = text.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
       if (!desiredCount || desiredCount < 1) {
         const chunks = []; let buf = [];
-        paragraphs.forEach((p, i) => { buf.push(p); if (buf.length >= 2 || i === paragraphs.length - 1) { chunks.push(buf.join('\n\n')); buf = []; } });
+        paragraphs.forEach((p, i) => { buf.push(p); if (buf.length >= 2 || i === paragraphs.length - 1) { chunks.push(buf.join('\\n\\n')); buf = []; } });
         return chunks.length ? chunks : [text];
       } else {
         const per = Math.ceil(paragraphs.length / desiredCount);
@@ -330,7 +340,7 @@
         for (let i = 0; i < desiredCount; i++) {
           const start = i * per;
           const slice = paragraphs.slice(start, start + per);
-          if (slice.length) slides.push(slice.join('\n\n'));
+          if (slice.length) slides.push(slice.join('\\n\\n'));
         }
         return slides.length ? slides : [text];
       }
@@ -348,8 +358,8 @@
       if (d2) slide.addImage({ data: d2, x: 5.1, y: 4.5, w: 4.5, h: 3.0 });
     }
 
+    const status = document.getElementById('genStatus');
     document.getElementById('genBtn')?.addEventListener('click', async () => {
-      const status = document.getElementById('genStatus');
       const txt = document.getElementById('pptText').value.trim();
       const count = parseInt(document.getElementById('slideCount').value, 10);
       const topic = document.getElementById('topic').value;
@@ -362,7 +372,7 @@
       try{
         await ensurePptxReady();
       }catch(e){
-        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. جرب إعادة تحميل الصفحة.';
+        status.textContent = 'تعذّر تحميل مكتبة البوربوينت. جرّب تعطيل Ad‑Block أو إعادة تحميل الصفحة.';
         return;
       }
 
